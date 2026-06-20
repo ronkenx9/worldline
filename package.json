@@ -1,0 +1,36 @@
+{
+  "name": "worldline",
+  "version": "0.0.1",
+  "description": "WORLDLINE — cross-game memory layer for AI worlds. Self-sovereign Souls + multi-agent gamemaster on Walrus / Sui / MemWal / Seal.",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "demo": "node --experimental-strip-types src/demo/run.ts",
+    "demo:llm": "node --env-file=.env --experimental-strip-types src/demo/llm-run.ts",
+    "demo:genre": "node --env-file=.env --experimental-strip-types src/demo/genre-proof.ts",
+    "demo:fullstack": "node --env-file=.env --experimental-strip-types src/demo/fullstack-run.ts",
+    "demo:bubble": "npm --prefix demos/forks/bubble-gun start -- --host 127.0.0.1 --port 5181",
+    "demo:bubble:build": "npm --prefix demos/forks/bubble-gun run build",
+    "demo:os": "cd demos/forks/youre-the-os && PATH=\"$PWD/.venv/bin:$PATH\" .venv/bin/python run-web.py",
+    "demo:os:build": "cd demos/forks/youre-the-os && PATH=\"$PWD/.venv/bin:$PATH\" .venv/bin/python run-web.py build",
+    "demo:playable": "node demos/serve-playable.mjs",
+    "test:sui": "node --env-file=.env --experimental-strip-types src/integration/sui-pointer.ts",
+    "typecheck": "tsc --noEmit",
+    "demo:proxy": "node --env-file=.env --experimental-strip-types demos/proxy.mjs"
+  },
+  "dependencies": {
+    "@mysten/sui": "^2.18.0",
+    "@noble/ed25519": "^2.1.0",
+    "@noble/hashes": "^1.4.0"
+  },
+  "optionalDependencies": {
+    "@mysten-incubation/memwal": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "typescript": "^5.5.0"
+  }
+}

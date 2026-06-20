@@ -1,0 +1,41 @@
+{
+  "name": "bubble-gun",
+  "version": "1.3.0",
+  "description": "💦 Shoot bubbles at enemies!",
+  "author": "Mark <mark@remarkablemark.org>",
+  "scripts": {
+    "build": "npm run clean && vite build",
+    "bundle": "scripts/bundle.sh",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:tsc": "tsc --noEmit",
+    "prepare": "husky",
+    "preview": "vite preview",
+    "start": "vite --open"
+  },
+  "homepage": "https://remarkablegames.org/bubble-gun/",
+  "dependencies": {
+    "kaplay": "3001.0.19"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
+    "@eslint/compat": "2.1.0",
+    "@eslint/eslintrc": "3.3.5",
+    "@eslint/js": "10.0.1",
+    "@typescript-eslint/eslint-plugin": "8.61.1",
+    "@typescript-eslint/parser": "8.61.1",
+    "eslint": "10.5.0",
+    "eslint-plugin-prettier": "5.5.6",
+    "eslint-plugin-simple-import-sort": "13.0.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.0.7",
+    "prettier": "3.8.4",
+    "typescript": "5.9.3",
+    "vite": "8.0.16",
+    "vite-plugin-html": "3.2.2"
+  },
+  "private": true,
+  "license": "MIT"
+}

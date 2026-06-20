@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WORLDLINE Inspector</title>
+    <style>
+      :root {
+        --bg: #060607;
+        --panel: #0e0f12;
+        --hair: rgba(236, 230, 214, 0.1);
+        --ink: #ece6d6;
+        --muted: rgba(236, 230, 214, 0.55);
+        --soul: #8cffb8;
+        --memory: #7de8e0;
+        --canon: #c3aa46;
+        --rift: #7a5cff;
+        --oath: #a82e2e;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, "Plus Jakarta Sans", sans-serif; }
+      a { color: var(--memory); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+      header { display: flex; justify-content: space-between; align-items: center; padding: 18px 26px; border-bottom: 1px solid var(--hair); gap: 18px; }
+      h1 { margin: 0; font-size: 14px; letter-spacing: 0.3em; font-family: "JetBrains Mono", monospace; }
+      header .right { display: flex; align-items: center; gap: 18px; }
+      header .status { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); }
+      button.seed { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; padding: 8px 14px; border-radius: 999px; background: transparent; color: var(--canon); border: 1px solid rgba(195, 170, 70, 0.4); cursor: pointer; transition: all 0.18s ease; }
+      button.seed:hover { background: rgba(195, 170, 70, 0.08); border-color: rgba(195, 170, 70, 0.75); }
+      button.seed:disabled { opacity: 0.4; cursor: progress; }
+      header .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 8px; background: #4a4; vertical-align: middle; box-shadow: 0 0 8px #4a4; }
+      header .dot.off { background: var(--oath); box-shadow: 0 0 8px var(--oath); }
+      main { display: grid; grid-template-columns: 360px 1fr; gap: 0; min-height: calc(100vh - 56px); }
+      aside, section { padding: 22px 26px; }
+      aside { border-right: 1px solid var(--hair); }
+      .label { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.22em; color: var(--muted); text-transform: uppercase; }
+      .card { border: 1px solid var(--hair); background: var(--panel); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+      .id { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--ink); word-break: break-all; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      .field + .field { margin-top: 14px; }
+      h2 { margin: 0 0 14px; font-size: 18px; font-family: "Fraunces", "Plus Jakarta Sans", serif; font-weight: 500; }
+      h3 { margin: 26px 0 10px; font-size: 11px; letter-spacing: 0.24em; color: var(--muted); text-transform: uppercase; font-family: "JetBrains Mono", monospace; font-weight: 500; }
+      table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-family: "JetBrains Mono", monospace; }
+      th { text-align: left; color: var(--muted); font-weight: 500; padding: 6px 10px; border-bottom: 1px solid var(--hair); letter-spacing: 0.15em; font-size: 10px; text-transform: uppercase; }
+      td { padding: 10px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+      td.source-bubble-gun { color: var(--memory); }
+      td.source-youre-the-os { color: var(--canon); }
+      .badge { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid var(--hair); color: var(--muted); }
+      .badge.stored { color: var(--memory); border-color: rgba(125, 232, 224, 0.35); }
+      .badge.canon-updated { color: var(--canon); border-color: rgba(195, 170, 70, 0.4); }
+      .badge.pending { color: var(--rift); border-color: rgba(122, 92, 255, 0.4); }
+      .badge.error { color: var(--oath); border-color: rgba(168, 46, 46, 0.55); }
+      .standings { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; }
+      .standings .k { color: var(--muted); }
+      .standings .v { font-family: "JetBrains Mono", monospace; }
+      .standings .v.pos { color: var(--soul); }
+      .standings .v.neg { color: var(--oath); }
+      .empty { color: var(--muted); font-size: 12.5px; padding: 14px 0; font-family: "JetBrains Mono", monospace; }
+      .flash { animation: flash 0.6s ease; }
+      @keyframes flash { 0% { background: rgba(125, 232, 224, 0.2); } 100% { background: transparent; } }
+      footer { padding: 16px 26px; border-top: 1px solid var(--hair); color: var(--muted); font-size: 11px; font-family: "JetBrains Mono", monospace; }
+      .seal { border: 1px solid var(--hair); background: var(--panel); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+      .seal .row { display: flex; align-items: center; gap: 10px; }
+      .seal .icon { width: 22px; text-align: center; font-size: 16px; }
+      .seal .name { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+      .seal .meta { margin-top: 8px; font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--muted); word-break: break-all; }
+      .seal .reveal { margin-top: 8px; font-family: "Fraunces", serif; font-size: 14.5px; color: var(--soul); }
+      .seal.sealed .name { color: var(--muted); }
+      .seal.revealed { border-color: rgba(140, 255, 184, 0.3); background: rgba(140, 255, 184, 0.04); }
+      .seal .badge { margin-left: auto; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>WORLDLINE · INSPECTOR</h1>
+      <div class="right">
+        <button id="seed" class="seed" type="button" title="Fire 5 events through the live proxy to give this soul a backstory.">Seed demo history</button>
+        <div class="status"><span class="dot" id="dot"></span><span id="status">connecting…</span></div>
+      </div>
+    </header>
+    <main>
+      <aside>
+        <h2>Soul</h2>
+        <div class="card">
+          <div class="label">Actor</div>
+          <div class="id" id="actor">—</div>
+        </div>
+
+        <h3>Sui — verifiable mutable pointer</h3>
+        <div class="card">
+          <div class="field">
+            <span class="label">Blackboard object</span>
+            <div class="id"><a id="bb-link" target="_blank" rel="noreferrer"><span id="bb-id">—</span></a></div>
+          </div>
+          <div class="field">
+            <span class="label">Network</span>
+            <div class="mono" id="sui-network">—</div>
+          </div>
+        </div>
+
+        <h3>Walrus — current canon blob</h3>
+        <div class="card">
+          <div class="field">
+            <span class="label">Canon blob ID</span>
+            <div class="id"><a id="canon-link" target="_blank" rel="noreferrer"><span id="canon-id">—</span></a></div>
+          </div>
+          <div class="field">
+            <span class="label">Log head event</span>
+            <div class="id" id="loghead">—</div>
+          </div>
+        </div>
+
+        <h3>Canon (current state)</h3>
+        <div class="card">
+          <div class="label" style="margin-bottom:6px">Standings</div>
+          <div class="standings" id="standings"></div>
+          <div class="label" style="margin:14px 0 6px">Flags</div>
+          <div class="standings" id="flags"></div>
+        </div>
+
+        <h3>Keeper — sealed attributes</h3>
+        <p class="label" style="margin:-4px 0 8px; text-transform:none; letter-spacing:0.06em">
+          Encrypted with AES-256-GCM. Revealed by the Keeper agent only when canon satisfies the policy.
+        </p>
+        <div id="sealed"></div>
+      </aside>
+
+      <section>
+        <h2>Event log</h2>
+        <p class="label" style="margin-top:-6px">Newest first · each row is a signed event written to Walrus &amp; reconciled into canon.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Source</th>
+              <th>Type</th>
+              <th>Memo</th>
+              <th>Walrus blob</th>
+              <th>State</th>
+            </tr>
+          </thead>
+          <tbody id="events"></tbody>
+        </table>
+        <div class="empty" id="empty">No events yet. Play one of the games and they'll land here within ~10s.</div>
+      </section>
+    </main>
+    <footer>
+      Polling <span class="mono" id="proxy-url"></span> every 2.5s · soul <span class="mono" id="actor-footer"></span>
+    </footer>
+    <script>
+      const ACTOR = "soul:browser-player-001";
+      const PROXY = location.origin.startsWith("file:") ? "http://127.0.0.1:5195" : "";
+      document.getElementById("proxy-url").textContent = PROXY || location.origin;
+      document.getElementById("actor-footer").textContent = ACTOR;
+      document.getElementById("actor").textContent = ACTOR;
+
+      const seenEvents = new Set();
+      const fmtTime = (ms) => new Date(ms).toLocaleTimeString([], { hour12: false });
+      const fmtNum = (n) => (n > 0 ? "+" + n : String(n));
+
+      async function refresh() {
+        try {
+          const res = await fetch(`${PROXY}/soul/${encodeURIComponent(ACTOR)}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+
+          document.getElementById("dot").classList.remove("off");
+          document.getElementById("status").textContent = "live · proxy + Walrus + Sui";
+
+          // sui
+          document.getElementById("bb-id").textContent = data.sui.blackboardObjectId ?? "—";
+          const bbLink = document.getElementById("bb-link");
+          if (data.sui.explorerUrl) bbLink.href = data.sui.explorerUrl;
+          else bbLink.removeAttribute("href");
+          document.getElementById("sui-network").textContent = data.sui.network ?? "—";
+
+          // walrus
+          document.getElementById("canon-id").textContent = data.pointers.canon ?? "—";
+          const canonLink = document.getElementById("canon-link");
+          if (data.pointers.canonWalrusUrl) canonLink.href = data.pointers.canonWalrusUrl;
+          else canonLink.removeAttribute("href");
+          document.getElementById("loghead").textContent = data.pointers.loghead ?? "—";
+
+          // canon
+          const stEl = document.getElementById("standings");
+          stEl.innerHTML = "";
+          for (const [k, v] of Object.entries(data.canon?.standings ?? {})) {
+            const row = document.createElement("div");
+            row.className = "k";
+            row.textContent = k;
+            const val = document.createElement("div");
+            val.className = "v " + (v > 0 ? "pos" : v < 0 ? "neg" : "");
+            val.textContent = fmtNum(v);
+            stEl.appendChild(row);
+            stEl.appendChild(val);
+          }
+          const flEl = document.getElementById("flags");
+          flEl.innerHTML = "";
+          for (const [k, v] of Object.entries(data.canon?.flags ?? {})) {
+            const row = document.createElement("div");
+            row.className = "k";
+            row.textContent = k;
+            const val = document.createElement("div");
+            val.className = "v";
+            val.textContent = String(v);
+            flEl.appendChild(row);
+            flEl.appendChild(val);
+          }
+
+          // sealed attributes (Keeper)
+          const sealEl = document.getElementById("sealed");
+          const seals = Object.entries(data.sealed ?? {});
+          sealEl.innerHTML = seals.length === 0 ? '<div class="empty">no sealed attributes</div>' : "";
+          for (const [name, attr] of seals) {
+            const revealed = Boolean(attr.revealed);
+            const card = document.createElement("div");
+            card.className = `seal ${revealed ? "revealed" : "sealed"}`;
+            card.innerHTML = `
+              <div class="row">
+                <div class="icon">${revealed ? "🔓" : "🔒"}</div>
+                <div class="name">${name}</div>
+                <span class="badge ${revealed ? "canon-updated" : "pending"}">${revealed ? "REVEALED" : "SEALED"}</span>
+              </div>
+              <div class="meta">${revealed ? "policy met · " + attr.policy : attr.hint + " · " + attr.policy}</div>
+              ${revealed ? `<div class="reveal">${attr.revealed}</div>` : `<div class="meta" style="opacity:.6">${attr.ciphertextPreview}</div>`}
+            `;
+            sealEl.appendChild(card);
+          }
+
+          // events
+          const tbody = document.getElementById("events");
+          const empty = document.getElementById("empty");
+          tbody.innerHTML = "";
+          (data.events ?? []).forEach((e) => {
+            const tr = document.createElement("tr");
+            if (!seenEvents.has(e.id)) {
+              tr.classList.add("flash");
+              seenEvents.add(e.id);
+            }
+            const sourceClass = `source-${e.source.replace(/[^a-z\-]/gi, "-")}`;
+            tr.innerHTML = `
+              <td class="mono" style="color:var(--muted)">${fmtTime(e.timestamp)}</td>
+              <td class="mono ${sourceClass}">${e.source}</td>
+              <td class="mono">${e.type}</td>
+              <td>${e.memo ?? ""}</td>
+              <td class="mono">${e.walrusUrl ? `<a href="${e.walrusUrl}" target="_blank" rel="noreferrer">${e.blobId.slice(0, 16)}…</a>` : "—"}</td>
+              <td><span class="badge ${e.status}">${e.status}</span></td>
+            `;
+            tbody.appendChild(tr);
+          });
+          empty.style.display = data.events?.length ? "none" : "block";
+        } catch (e) {
+          document.getElementById("dot").classList.add("off");
+          document.getElementById("status").textContent = `offline · ${e.message}`;
+        }
+      }
+
+      refresh();
+      setInterval(refresh, 2500);
+
+      const seedBtn = document.getElementById("seed");
+      seedBtn.addEventListener("click", async () => {
+        seedBtn.disabled = true;
+        const label = seedBtn.textContent;
+        seedBtn.textContent = "seeding…";
+        try {
+          const res = await fetch(`${PROXY}/seed/${encodeURIComponent(ACTOR)}`, { method: "POST" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          seedBtn.textContent = `seeded ${data.seeded} events`;
+          // pulse refresh so the inspector picks them up immediately
+          refresh();
+        } catch (e) {
+          seedBtn.textContent = `failed · ${e.message}`;
+        }
+        setTimeout(() => {
+          seedBtn.disabled = false;
+          seedBtn.textContent = label;
+        }, 3500);
+      });
+    </script>
+  </body>
+</html>

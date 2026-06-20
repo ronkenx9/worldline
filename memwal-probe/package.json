@@ -1,0 +1,11 @@
+{
+  "name": "memwal-probe",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "probe": "node --env-file=.env --experimental-strip-types probe.ts"
+  },
+  "dependencies": {
+    "@mysten-incubation/memwal": "latest"
+  }
+}

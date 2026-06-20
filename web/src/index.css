@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap");
+@import "tailwindcss";
+
+/* WORLDLINE — "Archive Night" palette (see BRAND.md) */
+@theme {
+  --color-void: #050506;
+  --color-bone: #e9e2d0;
+  --color-memory: #7de8e0;
+  --color-canon: #c3aa46;
+  --color-soul: #8cffb8;
+  --color-rift: #7a5cff;
+  --color-oath: #a82e2e;
+
+  --font-display: "Fraunces", serif;
+  --font-grotesk: "Clash Display", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* faint parchment grain + vignette for "archive" depth */
+.archive-bg {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(122, 92, 255, 0.1), transparent 60%),
+    radial-gradient(900px 500px at 50% 110%, rgba(125, 232, 224, 0.06), transparent 60%),
+    var(--color-void);
+}
+
+@keyframes drift {
+  0% { transform: translateX(-2%); }
+  100% { transform: translateX(2%); }
+}
+
+@keyframes panel-scan {
+  0% { transform: translateX(-120%); opacity: 0; }
+  18% { opacity: 0.65; }
+  62% { opacity: 0.35; }
+  100% { transform: translateX(560%); opacity: 0; }
+}
+
+@keyframes panel-dash {
+  to { stroke-dashoffset: -64; }
+}
+
+.world-panel-shell {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--room) 84%, white 16%), color-mix(in srgb, var(--room) 68%, black 32%));
+}
+
+.world-panel-scan {
+  animation: panel-scan 4.4s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+}
+
+.world-panel-dash {
+  animation: panel-dash 5.5s linear infinite;
+}
