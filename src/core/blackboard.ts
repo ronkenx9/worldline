@@ -50,16 +50,32 @@ export class Blackboard {
     return decodeJSON<Event>(await this.blobs.read(blobId));
   }
 
-  /** Events appended after `cursor` (exclusive), oldest-first. */
+  /**
+   * Events appended after `cursor` (exclusive), oldest-first.
+   *
+   * Tolerant by design: an individual event blob that can't be read (expired on
+   * Walrus, or not yet propagated past the read-retry budget) is skipped rather
+   * than throwing — one dead blob must not poison the whole reconcile. The walk
+   * is bounded as a safety net against a corrupt logprev chain.
+   */
   async eventsSince(universe: string, cursor: string | null): Promise<Event[]> {
     const chain: string[] = [];
     let id = await this.pointers.get(`loghead:${universe}`);
-    while (id && id !== cursor && id !== "") {
+    let guard = 0;
+    while (id && id !== cursor && id !== "" && guard++ < 5000) {
       chain.push(id);
       id = await this.pointers.get(`logprev:${id}`);
     }
     chain.reverse();
-    return Promise.all(chain.map((eid) => this.getEvent(eid)));
+    const events: Event[] = [];
+    for (const eid of chain) {
+      try {
+        events.push(await this.getEvent(eid));
+      } catch (e) {
+        console.warn(`[blackboard] skip unreadable event ${eid.slice(0, 10)}…: ${(e as Error).message}`);
+      }
+    }
+    return events;
   }
 
   async logHead(universe: string): Promise<string | null> {

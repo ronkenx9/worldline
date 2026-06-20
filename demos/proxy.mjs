@@ -22,7 +22,8 @@ import { Continuity } from "../src/agents/continuity.ts";
 import { seal, tickKeeper, describePolicy } from "../src/agents/keeper.ts";
 
 const PORT = Number(process.env.WORLDLINE_PROXY_PORT ?? 5195);
-const UNIVERSE = "worldline-demo";
+// v2: fresh universe (the v1 log accumulated expired epochs:1 blobs during dev).
+const UNIVERSE = process.env.WORLDLINE_UNIVERSE ?? "worldline-demo-v2";
 
 /**
  * The seeded backstory — a coherent "veteran reckless operator" arc:

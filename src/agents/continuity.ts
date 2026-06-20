@@ -21,13 +21,20 @@ export class Continuity {
 
   async tick(bb: Blackboard, universe: string, schema: CanonSchema): Promise<ContinuityResult> {
     const cursor = await bb.getCursor(universe);
-    const events = await bb.eventsSince(universe, cursor);
+    const head = await bb.logHead(universe);
     const current = await bb.getCanon(universe, schema);
-    if (events.length === 0) return { reconciled: 0, canon: current };
+    if (!head || head === cursor) return { reconciled: 0, canon: current };
 
-    const next = await this.policy(events, current, schema);
-    await bb.setCanon(universe, next);
-    await bb.setCursor(universe, events[events.length - 1]!.id);
-    return { reconciled: events.length, canon: next };
+    const events = await bb.eventsSince(universe, cursor);
+    let canon = current;
+    if (events.length > 0) {
+      canon = await this.policy(events, current, schema);
+      await bb.setCanon(universe, canon);
+    }
+    // Advance to the log tip even if some events were unreadable/skipped, so an
+    // expired or slow-to-propagate blob can't poison the cursor and stall every
+    // future tick. (Writes are serialized upstream, so `head` is stable here.)
+    await bb.setCursor(universe, head);
+    return { reconciled: events.length, canon };
   }
 }
