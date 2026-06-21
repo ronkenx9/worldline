@@ -45,9 +45,9 @@ export function ScrollJourney() {
   useEffect(() => {
     let lastTouchY = 0;
     const clamp = (value: number) => Math.min(1, Math.max(0, value));
-    const advance = (delta: number) => {
+    const advance = (delta: number, divisor = 5200) => {
       if (forcedParam != null) return;
-      journeyProgress.set(clamp(journeyProgress.get() + delta / 5200));
+      journeyProgress.set(clamp(journeyProgress.get() + delta / divisor));
     };
 
     const onWheel = (event: WheelEvent) => {
@@ -65,7 +65,7 @@ export function ScrollJourney() {
         }
       }
       event.preventDefault();
-      advance(event.deltaY);
+      advance(event.deltaY, 5200);
     };
     const onTouchStart = (event: TouchEvent) => {
       lastTouchY = event.touches[0]?.clientY ?? 0;
@@ -82,14 +82,13 @@ export function ScrollJourney() {
         const canScrollDown = delta > 0 && scrollHost.scrollTop + scrollHost.clientHeight < scrollHost.scrollHeight - 2;
         const canScrollUp = delta < 0 && scrollHost.scrollTop > 2;
         if (canScrollDown || canScrollUp) {
-          event.preventDefault();
-          scrollHost.scrollTop += delta;
+          // Allow native browser momentum scrolling inside the container
           lastTouchY = nextY;
           return;
         }
       }
       event.preventDefault();
-      advance(delta);
+      advance(delta, 3200); // Faster, more responsive touch advance for 3D travel sections
       lastTouchY = nextY;
     };
 
