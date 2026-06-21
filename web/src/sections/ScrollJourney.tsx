@@ -51,10 +51,13 @@ export function ScrollJourney() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      const scrollHost = (event.target as Element | null)?.closest?.("[data-world-artifact-scroll]") as HTMLElement | null;
-      if (scrollHost) {
-        const canScrollDown = event.deltaY > 0 && scrollHost.scrollTop + scrollHost.clientHeight < scrollHost.scrollHeight - 1;
-        const canScrollUp = event.deltaY < 0 && scrollHost.scrollTop > 1;
+      const state = stationStateAt(progress.get());
+      const scrollHosts = document.querySelectorAll("[data-world-artifact-scroll]");
+      const scrollHost = scrollHosts[state.worldIndex] as HTMLElement | null;
+
+      if (state.phase === "inside" && scrollHost) {
+        const canScrollDown = event.deltaY > 0 && scrollHost.scrollTop + scrollHost.clientHeight < scrollHost.scrollHeight - 2;
+        const canScrollUp = event.deltaY < 0 && scrollHost.scrollTop > 2;
         if (canScrollDown || canScrollUp) {
           event.preventDefault();
           scrollHost.scrollTop += event.deltaY;
@@ -70,10 +73,14 @@ export function ScrollJourney() {
     const onTouchMove = (event: TouchEvent) => {
       const nextY = event.touches[0]?.clientY ?? lastTouchY;
       const delta = lastTouchY - nextY;
-      const scrollHost = (event.target as Element | null)?.closest?.("[data-world-artifact-scroll]") as HTMLElement | null;
-      if (scrollHost) {
-        const canScrollDown = delta > 0 && scrollHost.scrollTop + scrollHost.clientHeight < scrollHost.scrollHeight - 1;
-        const canScrollUp = delta < 0 && scrollHost.scrollTop > 1;
+
+      const state = stationStateAt(progress.get());
+      const scrollHosts = document.querySelectorAll("[data-world-artifact-scroll]");
+      const scrollHost = scrollHosts[state.worldIndex] as HTMLElement | null;
+
+      if (state.phase === "inside" && scrollHost) {
+        const canScrollDown = delta > 0 && scrollHost.scrollTop + scrollHost.clientHeight < scrollHost.scrollHeight - 2;
+        const canScrollUp = delta < 0 && scrollHost.scrollTop > 2;
         if (canScrollDown || canScrollUp) {
           event.preventDefault();
           scrollHost.scrollTop += delta;
@@ -95,7 +102,7 @@ export function ScrollJourney() {
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
     };
-  }, [forcedParam, journeyProgress]);
+  }, [forcedParam, journeyProgress, progress]);
 
   const [activeWorld, setActiveWorld] = useState<World>(WORLDS[0]);
 

@@ -11,12 +11,12 @@ import type { World } from "../lib/journey.ts";
  * HERO (giant word) → LEDE → SCENE 1..4 → CAROUSEL → CONCRETE EXAMPLE → OUTRO
  */
 export function WorldRoom({ world, active = false }: { world: World; active?: boolean }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
   
   return (
-    <ScrollRoot.Provider value={scrollRef}>
+    <ScrollRoot.Provider value={scrollEl}>
       <div
-        ref={scrollRef}
+        ref={setScrollEl}
         data-world-artifact-scroll
         className="relative h-full w-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden wk-hoverable-text"
         style={{
@@ -29,103 +29,105 @@ export function WorldRoom({ world, active = false }: { world: World; active?: bo
           <WorldBackground world={world} active={active} />
         </div>
 
-        <div className="relative z-10">
-          {/* Hero segment */}
-          <WorldHero world={world} />
+        {scrollEl && (
+          <div className="relative z-10">
+            {/* Hero segment */}
+            <WorldHero world={world} />
 
-          {/* Scenes 1-4 */}
-          {world.scenes.map((s, i) => (
-            <section key={i} className="flex min-h-[82vh] items-center px-6 sm:px-12 lg:px-20 py-16">
-              <div className="grid w-full items-start gap-8 md:grid-cols-12 md:gap-12">
-                <div className={`md:col-span-6 ${i % 2 ? "md:order-2 md:col-start-7" : "md:col-start-1"}`}>
-                  <Reveal>
-                    <span className="font-mono text-xs uppercase tracking-[0.24em]" style={{ color: world.accent }}>
-                      {String(i + 1).padStart(2, "0")} · Scene
-                    </span>
-                  </Reveal>
-                  <h3 className="mt-5 max-w-xl font-grotesk text-[clamp(2.4rem,5.5vw,4.4rem)] font-semibold uppercase leading-[0.95]" style={{ color: world.ink }}>
-                    <SplitText text={s.heading} rhythm={world.element} />
-                  </h3>
-                </div>
-                <div className={`md:col-span-5 ${i % 2 ? "md:order-1 md:col-start-1" : "md:col-start-8"}`}>
-                  <Reveal delay={0.12}>
-                    <p className="font-sans text-lg leading-relaxed sm:text-xl" style={{ color: world.inkMuted }}>
-                      <Highlighted text={s.body} terms={s.highlights} color={world.accent} flicker={world.element === "fire"} />
-                    </p>
-                    <div className="mt-7 border-l-2 pl-4" style={{ borderColor: world.accent }}>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: world.accent }}>
-                        Plainly
+            {/* Scenes 1-4 */}
+            {world.scenes.map((s, i) => (
+              <section key={i} className="flex min-h-[82vh] items-center px-6 sm:px-12 lg:px-20 py-16">
+                <div className="grid w-full items-start gap-8 md:grid-cols-12 md:gap-12">
+                  <div className={`md:col-span-6 ${i % 2 ? "md:order-2 md:col-start-7" : "md:col-start-1"}`}>
+                    <Reveal>
+                      <span className="font-mono text-xs uppercase tracking-[0.24em]" style={{ color: world.accent }}>
+                        {String(i + 1).padStart(2, "0")} · Scene
                       </span>
-                      <p className="mt-1.5 font-sans text-[15px] leading-relaxed" style={{ color: world.ink, opacity: 0.9 }}>{s.plain}</p>
-                    </div>
+                    </Reveal>
+                    <h3 className="mt-5 max-w-xl font-grotesk text-[clamp(2.4rem,5.5vw,4.4rem)] font-semibold uppercase leading-[0.95]" style={{ color: world.ink }}>
+                      <SplitText text={s.heading} rhythm={world.element} />
+                    </h3>
+                  </div>
+                  <div className={`md:col-span-5 ${i % 2 ? "md:order-1 md:col-start-1" : "md:col-start-8"}`}>
+                    <Reveal delay={0.12}>
+                      <p className="font-sans text-lg leading-relaxed sm:text-xl" style={{ color: world.inkMuted }}>
+                        <Highlighted text={s.body} terms={s.highlights} color={world.accent} flicker={world.element === "fire"} />
+                      </p>
+                      <div className="mt-7 border-l-2 pl-4" style={{ borderColor: world.accent }}>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: world.accent }}>
+                          Plainly
+                        </span>
+                        <p className="mt-1.5 font-sans text-[15px] leading-relaxed" style={{ color: world.ink, opacity: 0.9 }}>{s.plain}</p>
+                      </div>
+                    </Reveal>
+                  </div>
+                </div>
+              </section>
+            ))}
+
+            {/* Explainer Carousel */}
+            <ExplainCarousel world={world} />
+
+            {/* Concrete Example */}
+            <section className="px-6 py-24 sm:px-12 lg:px-20 border-t border-b" style={{ borderColor: `${world.accent}14`, background: world.element === "ice" ? "rgba(10, 98, 133, 0.04)" : "rgba(0,0,0,0.22)" }}>
+              <div className="mx-auto max-w-5xl">
+                <Reveal>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: world.accent }}>
+                    Concrete Example
+                  </span>
+                  <h2 className="mt-3 font-grotesk text-3xl font-semibold uppercase tracking-tight sm:text-4xl" style={{ color: world.ink }}>
+                    {world.concreteExample.title}
+                  </h2>
+                  <p className="mt-2 font-sans text-sm sm:text-base" style={{ color: world.inkMuted, opacity: 0.75 }}>
+                    {world.concreteExample.subtitle}
+                  </p>
+                </Reveal>
+
+                <div className="mt-12">
+                  <Reveal delay={0.1}>
+                    <ConcreteShowcase type={world.concreteExample.type} accent={world.accent} />
                   </Reveal>
                 </div>
               </div>
             </section>
-          ))}
 
-          {/* Explainer Carousel */}
-          <ExplainCarousel world={world} />
-
-          {/* Concrete Example */}
-          <section className="px-6 py-24 sm:px-12 lg:px-20 border-t border-b" style={{ borderColor: `${world.accent}14`, background: world.element === "ice" ? "rgba(10, 98, 133, 0.04)" : "rgba(0,0,0,0.22)" }}>
-            <div className="mx-auto max-w-5xl">
+            {/* Outro */}
+            <section className="flex min-h-[72vh] flex-col items-center justify-center px-6 text-center sm:px-12 py-16">
               <Reveal>
-                <span className="font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: world.accent }}>
-                  Concrete Example
-                </span>
-                <h2 className="mt-3 font-grotesk text-3xl font-semibold uppercase tracking-tight sm:text-4xl" style={{ color: world.ink }}>
-                  {world.concreteExample.title}
-                </h2>
-                <p className="mt-2 font-sans text-sm sm:text-base" style={{ color: world.inkMuted, opacity: 0.75 }}>
-                  {world.concreteExample.subtitle}
+                <p className="mx-auto max-w-3xl font-display text-[clamp(1.9rem,4.4vw,3.4rem)] italic leading-snug" style={{ color: world.ink }}>
+                  {world.outro}
                 </p>
+                
+                {world.element === "earth" ? (
+                  <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
+                    <a
+                      href="#"
+                      className="pointer-events-auto rounded-full bg-[#7de8e0] px-8 py-3.5 font-sans text-sm font-semibold text-[#050506] transition-transform hover:scale-[1.03]"
+                    >
+                      View the live demo
+                    </a>
+                    <a
+                      href="#"
+                      className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
+                    >
+                      Read the SDK
+                    </a>
+                    <a
+                      href="#"
+                      className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
+                    >
+                      Inspect on-chain
+                    </a>
+                  </div>
+                ) : (
+                  <p className="mt-14 font-mono text-[10px] uppercase tracking-[0.32em]" style={{ color: world.ink, opacity: 0.35 }}>
+                    keep scrolling to travel on ↓
+                  </p>
+                )}
               </Reveal>
-
-              <div className="mt-12">
-                <Reveal delay={0.1}>
-                  <ConcreteShowcase type={world.concreteExample.type} accent={world.accent} />
-                </Reveal>
-              </div>
-            </div>
-          </section>
-
-          {/* Outro */}
-          <section className="flex min-h-[72vh] flex-col items-center justify-center px-6 text-center sm:px-12 py-16">
-            <Reveal>
-              <p className="mx-auto max-w-3xl font-display text-[clamp(1.9rem,4.4vw,3.4rem)] italic leading-snug" style={{ color: world.ink }}>
-                {world.outro}
-              </p>
-              
-              {world.element === "earth" ? (
-                <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-                  <a
-                    href="#"
-                    className="pointer-events-auto rounded-full bg-[#7de8e0] px-8 py-3.5 font-sans text-sm font-semibold text-[#050506] transition-transform hover:scale-[1.03]"
-                  >
-                    View the live demo
-                  </a>
-                  <a
-                    href="#"
-                    className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
-                  >
-                    Read the SDK
-                  </a>
-                  <a
-                    href="#"
-                    className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
-                  >
-                    Inspect on-chain
-                  </a>
-                </div>
-              ) : (
-                <p className="mt-14 font-mono text-[10px] uppercase tracking-[0.32em]" style={{ color: world.ink, opacity: 0.35 }}>
-                  keep scrolling to travel on ↓
-                </p>
-              )}
-            </Reveal>
-          </section>
-        </div>
+            </section>
+          </div>
+        )}
       </div>
     </ScrollRoot.Provider>
   );

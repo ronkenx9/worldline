@@ -13,7 +13,7 @@ export function ExplainCarousel({ world }: { world: World }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    container: root ?? undefined,
+    container: root ? { current: root } : undefined,
     offset: ["start start", "end end"],
   });
 

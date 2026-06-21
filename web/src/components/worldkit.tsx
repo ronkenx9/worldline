@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 export const EASE = [0.22, 1, 0.36, 1] as const;
 
 /** The scroll container of the active world — reveals fire against THIS, not window. */
-export const ScrollRoot = createContext<RefObject<HTMLDivElement> | null>(null);
+export const ScrollRoot = createContext<HTMLDivElement | null>(null);
 export const useScrollRoot = () => useContext(ScrollRoot);
 
 /** Block-level scroll reveal: fade + rise + blur-clear, in the element's rhythm. */
@@ -31,7 +31,7 @@ export function Reveal({
       className={className}
       initial={{ opacity: 0, y, filter: `blur(${blur}px)` }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ root: root ?? undefined, once: true, margin: "-12% 0px -12% 0px" }}
+      viewport={{ root: root ? { current: root } : undefined, once: true, margin: "-12% 0px -12% 0px" }}
       transition={{ duration, ease: EASE, delay }}
     >
       {children}
@@ -81,7 +81,7 @@ export function SplitText({
           style={{ willChange: "transform, opacity, filter", marginRight: by === "word" ? "0.26em" : undefined }}
           initial={{ opacity: 0, y: r.y, filter: `blur(${r.blur}px)` }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          viewport={{ root: root ?? undefined, once: true, margin: "-10% 0px -10% 0px" }}
+          viewport={{ root: root ? { current: root } : undefined, once: true, margin: "-10% 0px -10% 0px" }}
           transition={{ duration: r.duration, ease: EASE, delay: delay + i * r.stagger }}
         >
           {it === " " ? " " : it}
