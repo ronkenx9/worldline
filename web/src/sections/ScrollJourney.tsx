@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useTransform, useMotionValue, useMotionValueEvent, type MotionValue } from "motion/react";
-import { WorldPanel } from "../components/WorldPanel.tsx";
+import { WorldRoom } from "../components/WorldRoom.tsx";
 import { WorldlineCanvas } from "../components/WorldlineCanvas.tsx";
-import { WORLDS, STOPS, N, stationStateAt, type World } from "../lib/journey.ts";
+import { WORLDS, STOPS, N, stationStateAt, worldIndexAt, type World } from "../lib/journey.ts";
 
 /** One world's content — shown only while the camera rests inside that world. */
 function Station({ progress, i, world }: { progress: MotionValue<number>; i: number; world: World }) {
@@ -28,7 +28,7 @@ function Station({ progress, i, world }: { progress: MotionValue<number>; i: num
   });
   return (
     <motion.div style={{ opacity, y, pointerEvents }} className="absolute inset-0 z-20">
-      <WorldPanel world={world} active={active} />
+      <WorldRoom world={world} active={active} />
     </motion.div>
   );
 }
@@ -97,6 +97,12 @@ export function ScrollJourney() {
     };
   }, [forcedParam, journeyProgress]);
 
+  const [activeWorld, setActiveWorld] = useState<World>(WORLDS[0]);
+
+  useMotionValueEvent(progress, "change", (p) => {
+    setActiveWorld(WORLDS[worldIndexAt(p)]);
+  });
+
   // the flat colour "room" that crossfades in over the zoom (exact world colour)
   const pageColor = useTransform(progress, (p) => WORLDS[stationStateAt(p).worldIndex].color);
   const pageAlpha = useTransform(progress, (p) => stationStateAt(p).roomOpacity);
@@ -110,6 +116,16 @@ export function ScrollJourney() {
 
   return (
     <div ref={hero} className="relative h-screen w-full overflow-hidden overscroll-none">
+      {/* Dynamic Header / Navigation Bar */}
+      <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-5 sm:px-10 transition-colors duration-300" style={{ color: activeWorld.ink }}>
+        <span className="font-mono text-sm tracking-[0.3em]">WORLDLINE</span>
+        <nav className="hidden gap-8 font-sans text-sm opacity-70 sm:flex">
+          <a className="transition-opacity hover:opacity-100" href="#">Thesis</a>
+          <a className="transition-opacity hover:opacity-100" href="#">Demo</a>
+          <a className="transition-opacity hover:opacity-100" href="#">SDK</a>
+        </nav>
+      </header>
+
       <div className="absolute inset-0 h-screen w-full overflow-hidden">
         {/* artifact (pinned) — the 3D transition */}
         <motion.div style={{ opacity: artifactOpacity }} className="absolute inset-0 z-0">

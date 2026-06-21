@@ -66,3 +66,112 @@ body {
 .world-panel-dash {
   animation: panel-dash 5.5s linear infinite;
 }
+
+/* ── elemental world textures (WORLDS-BUILD-SPEC.md) ───────────────────────── */
+@keyframes wk-breathe {
+  0%, 100% { opacity: 0.6; transform: translateY(0) scale(1); }
+  50% { opacity: 1; transform: translateY(-1.5%) scale(1.04); }
+}
+.wk-breathe { animation: wk-breathe 7s cubic-bezier(0.45, 0, 0.55, 1) infinite; will-change: opacity, transform; }
+
+@keyframes wk-drift {
+  0% { transform: translate3d(-1.5%, -1%, 0) scale(1.05); }
+  100% { transform: translate3d(1.5%, 1%, 0) scale(1.05); }
+}
+.wk-drift { animation: wk-drift 14s ease-in-out infinite alternate; will-change: transform; }
+
+.wk-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-breathe, .wk-drift { animation: none; }
+}
+
+@keyframes wk-flame {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  45% { opacity: 0.84; filter: brightness(1.3); }
+  72% { opacity: 0.95; filter: brightness(1.08); }
+}
+.wk-flame { animation: wk-flame 2.8s ease-in-out infinite; }
+
+/* ── elemental text shaders (WORLDS-BUILD-SPEC.md) ───────────────────────── */
+.wk-water-text {
+  background: linear-gradient(120deg, #ffffff 15%, #7de8e0 42%, #5fd2e0 58%, #ffffff 85%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wk-water-shimmer 6s linear infinite;
+  text-shadow: 0 0 45px rgba(95,210,224,0.34);
+}
+
+@keyframes wk-water-shimmer {
+  to { background-position: 200% center; }
+}
+
+.wk-ice-text {
+  background: linear-gradient(135deg, #050506 20%, #0a6285 50%, #050506 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: wk-ice-shimmer 7.2s ease-in-out infinite alternate;
+  text-shadow: 0 0 50px rgba(10,98,133,0.15), 0 0 15px rgba(10,98,133,0.08);
+}
+
+@keyframes wk-ice-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.wk-earth-text {
+  color: #e9b878;
+  background: linear-gradient(to bottom, #ffffff, #dca65f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-flame, .wk-water-text, .wk-ice-text {
+    animation: none !important;
+    background-size: 100% auto !important;
+    -webkit-text-fill-color: currentColor !important;
+    background: none !important;
+  }
+}
+
+/* Dynamic room text hover effects (WORLDS-BUILD-SPEC.md contrast colors) */
+.wk-hoverable-text h1,
+.wk-hoverable-text h2,
+.wk-hoverable-text h3,
+.wk-hoverable-text h4,
+.wk-hoverable-text p,
+.wk-hoverable-text span,
+.wk-hoverable-text pre,
+.wk-hoverable-text code,
+.wk-hoverable-text a {
+  transition: color 0.3s cubic-bezier(0.22, 1, 0.36, 1), text-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wk-hoverable-text h1:hover,
+.wk-hoverable-text h2:hover,
+.wk-hoverable-text h3:hover,
+.wk-hoverable-text h4:hover {
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  text-shadow: 0 0 20px var(--accent);
+}
+
+.wk-hoverable-text p:hover,
+.wk-hoverable-text span:hover,
+.wk-hoverable-text code:hover {
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+}
+
+.wk-hoverable-text a:hover {
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  text-shadow: 0 0 10px var(--accent);
+}
