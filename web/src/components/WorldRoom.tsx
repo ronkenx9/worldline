@@ -100,6 +100,99 @@ export function WorldRoom({ world, active = false }: { world: World; active?: bo
               </div>
             </section>
 
+            {/* Use Cases Section (Earth room only) */}
+            {world.element === "earth" && (
+              <section className="px-6 py-24 sm:px-12 lg:px-20 border-b" style={{ borderColor: `${world.accent}14`, background: "rgba(0,0,0,0.16)" }}>
+                <div className="mx-auto max-w-5xl">
+                  <Reveal>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: world.accent }}>
+                      Ecosystem Integration
+                    </span>
+                    <h2 className="mt-3 font-grotesk text-3xl font-semibold uppercase tracking-tight sm:text-4xl" style={{ color: world.ink }}>
+                      Ecosystem Use Cases
+                    </h2>
+                    <p className="mt-2 font-sans text-sm sm:text-base max-w-2xl" style={{ color: world.inkMuted, opacity: 0.75 }}>
+                      How developers leverage WORLDLINE's cross-game memory layer to build deep narrative coherence and unified player progression.
+                    </p>
+                  </Reveal>
+
+                  <div className="mt-12 grid gap-6 md:grid-cols-2">
+                    {/* Use Case 1 */}
+                    <Reveal delay={0.05} className="flex">
+                      <div className="group relative flex flex-col justify-between rounded-2xl border p-8 bg-[#050506]/85 transition-all duration-300 hover:scale-[1.02] hover:bg-[#050506]/95" style={{ borderColor: `${world.accent}22` }}>
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: world.accent }}>01 · IP Multiverses</span>
+                            <svg className="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke={world.accent} strokeWidth="1.5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94-3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                            </svg>
+                          </div>
+                          <h4 className="mt-5 font-grotesk text-xl font-bold uppercase text-white">Unified Franchise IPs</h4>
+                          <p className="mt-4 font-sans text-sm leading-relaxed" style={{ color: world.inkMuted }}>
+                            A player defeats a raid boss in a desktop MMORPG. The signed action commits to their canon. When they open the mobile companion app, their profile instantly unlocks related lore rewards and inventory cosmetics—without direct API database integrations between different development teams.
+                          </p>
+                        </div>
+                      </div>
+                    </Reveal>
+
+                    {/* Use Case 2 */}
+                    <Reveal delay={0.1} className="flex">
+                      <div className="group relative flex flex-col justify-between rounded-2xl border p-8 bg-[#050506]/85 transition-all duration-300 hover:scale-[1.02] hover:bg-[#050506]/95" style={{ borderColor: `${world.accent}22` }}>
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: world.accent }}>02 · RPG & Story Continuity</span>
+                            <svg className="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke={world.accent} strokeWidth="1.5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                            </svg>
+                          </div>
+                          <h4 className="mt-5 font-grotesk text-xl font-bold uppercase text-white">Cross-Game Reputation</h4>
+                          <p className="mt-4 font-sans text-sm leading-relaxed" style={{ color: world.inkMuted }}>
+                            A player betrays a powerful merchants' guild in a hardcore fantasy rogue-like. The event crystallizes in their on-chain history. Booting up an allied sci-fi trade simulator weeks later, the local faction spaceport scans their soul credentials, recognizes the betrayal, and locks them out of premium trading docks.
+                          </p>
+                        </div>
+                      </div>
+                    </Reveal>
+
+                    {/* Use Case 3 */}
+                    <Reveal delay={0.15} className="flex">
+                      <div className="group relative flex flex-col justify-between rounded-2xl border p-8 bg-[#050506]/85 transition-all duration-300 hover:scale-[1.02] hover:bg-[#050506]/95" style={{ borderColor: `${world.accent}22` }}>
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: world.accent }}>03 · Cognitive AI Memory</span>
+                            <svg className="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke={world.accent} strokeWidth="1.5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                            </svg>
+                          </div>
+                          <h4 className="mt-5 font-grotesk text-xl font-bold uppercase text-white">NPC Cognitive Continuity</h4>
+                          <p className="mt-4 font-sans text-sm leading-relaxed" style={{ color: world.inkMuted }}>
+                            AI-driven NPCs query the player's historical canon on load. An LLM-powered bartender in a cyberpunk lounge analyzes your past accomplishments from an indie adventure game, commenting on your legacy: "You're the one who saved the colony on Sector 4, aren't you? Drinks are on the house."
+                          </p>
+                        </div>
+                      </div>
+                    </Reveal>
+
+                    {/* Use Case 4 */}
+                    <Reveal delay={0.2} className="flex">
+                      <div className="group relative flex flex-col justify-between rounded-2xl border p-8 bg-[#050506]/85 transition-all duration-300 hover:scale-[1.02] hover:bg-[#050506]/95" style={{ borderColor: `${world.accent}22` }}>
+                        <div>
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs uppercase tracking-wider" style={{ color: world.accent }}>04 · Indie Cooperatives</span>
+                            <svg className="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke={world.accent} strokeWidth="1.5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            </svg>
+                          </div>
+                          <h4 className="mt-5 font-grotesk text-xl font-bold uppercase text-white">Indie Shared Universes</h4>
+                          <p className="mt-4 font-sans text-sm leading-relaxed" style={{ color: world.inkMuted }}>
+                            Five independent game studios form a collaborative guild and share a set of custom memory schemas. Players unlock secrets, easter eggs, and narrative continuities across all five games. A key retrieved in a platformer unlocks a chest in a racing game, creating a community-driven player ecosystem.
+                          </p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  </div>
+                </div>
+              </section>
+            )}
+
             {/* Outro */}
             <section className="flex min-h-[72vh] flex-col items-center justify-center px-6 text-center sm:px-12 py-16">
               <Reveal>
