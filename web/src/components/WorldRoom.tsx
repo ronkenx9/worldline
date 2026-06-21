@@ -12,6 +12,15 @@ import type { World } from "../lib/journey.ts";
  */
 export function WorldRoom({ world, active = false }: { world: World; active?: boolean }) {
   const [scrollEl, setScrollEl] = useState<HTMLDivElement | null>(null);
+
+  const handleScrollToDemo = () => {
+    if (scrollEl) {
+      const target = scrollEl.querySelector("#concrete-showcase-element");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  };
   
   return (
     <ScrollRoot.Provider value={scrollEl}>
@@ -69,7 +78,7 @@ export function WorldRoom({ world, active = false }: { world: World; active?: bo
             <ExplainCarousel world={world} />
 
             {/* Concrete Example */}
-            <section className="px-6 py-24 sm:px-12 lg:px-20 border-t border-b" style={{ borderColor: `${world.accent}14`, background: world.element === "ice" ? "rgba(10, 98, 133, 0.04)" : "rgba(0,0,0,0.22)" }}>
+            <section id="concrete-showcase-element" className="px-6 py-24 sm:px-12 lg:px-20 border-t border-b" style={{ borderColor: `${world.accent}14`, background: world.element === "ice" ? "rgba(10, 98, 133, 0.04)" : "rgba(0,0,0,0.22)" }}>
               <div className="mx-auto max-w-5xl">
                 <Reveal>
                   <span className="font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: world.accent }}>
@@ -100,20 +109,24 @@ export function WorldRoom({ world, active = false }: { world: World; active?: bo
                 
                 {world.element === "earth" ? (
                   <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-                    <a
-                      href="#"
-                      className="pointer-events-auto rounded-full bg-[#7de8e0] px-8 py-3.5 font-sans text-sm font-semibold text-[#050506] transition-transform hover:scale-[1.03]"
+                    <button
+                      onClick={handleScrollToDemo}
+                      className="pointer-events-auto rounded-full bg-[#7de8e0] px-8 py-3.5 font-sans text-sm font-semibold text-[#050506] transition-transform hover:scale-[1.03] cursor-pointer border-none"
                     >
                       View the live demo
-                    </a>
+                    </button>
                     <a
-                      href="#"
+                      href="https://github.com/ronkenx9/worldline"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
                     >
                       Read the SDK
                     </a>
                     <a
-                      href="#"
+                      href="https://suiscan.xyz/testnet/object/0x4f12de88cfb08c90ad738a9d1b67e0e7a2b6f10c793ff8aa2266cb226e6ef12"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="pointer-events-auto rounded-full border border-white/20 px-8 py-3.5 font-sans text-sm font-medium text-white transition-colors hover:border-[#7de8e0] hover:text-[#7de8e0]"
                     >
                       Inspect on-chain

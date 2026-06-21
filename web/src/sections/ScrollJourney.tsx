@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useTransform, useMotionValue, useMotionValueEvent, type MotionValue } from "motion/react";
+import { motion, useTransform, useMotionValue, useMotionValueEvent, animate, type MotionValue } from "motion/react";
 import { WorldRoom } from "../components/WorldRoom.tsx";
 import { WorldlineCanvas } from "../components/WorldlineCanvas.tsx";
 import { WORLDS, STOPS, N, stationStateAt, worldIndexAt, type World } from "../lib/journey.ts";
@@ -125,11 +125,42 @@ export function ScrollJourney() {
     <div ref={hero} className="relative h-screen w-full overflow-hidden overscroll-none">
       {/* Dynamic Header / Navigation Bar */}
       <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-5 sm:px-10 transition-colors duration-300" style={{ color: activeWorld.ink }}>
-        <span className="font-mono text-sm tracking-[0.3em]">WORLDLINE</span>
-        <nav className="hidden gap-8 font-sans text-sm opacity-70 sm:flex">
-          <a className="transition-opacity hover:opacity-100" href="#">Thesis</a>
-          <a className="transition-opacity hover:opacity-100" href="#">Demo</a>
-          <a className="transition-opacity hover:opacity-100" href="#">SDK</a>
+        <button
+          onClick={() => {
+            if (forcedParam != null) return;
+            animate(journeyProgress, 0, { duration: 1.4, ease: [0.22, 1, 0.36, 1] });
+          }}
+          className="font-mono text-sm tracking-[0.3em] cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-none text-inherit font-semibold"
+        >
+          WORLDLINE
+        </button>
+        <nav className="hidden gap-8 font-sans text-sm opacity-70 sm:flex items-center">
+          <button
+            onClick={() => {
+              if (forcedParam != null) return;
+              animate(journeyProgress, STOPS[0], { duration: 1.4, ease: [0.22, 1, 0.36, 1] });
+            }}
+            className="transition-opacity hover:opacity-100 cursor-pointer bg-transparent border-none text-inherit"
+          >
+            Thesis
+          </button>
+          <button
+            onClick={() => {
+              if (forcedParam != null) return;
+              animate(journeyProgress, STOPS[3], { duration: 1.4, ease: [0.22, 1, 0.36, 1] });
+            }}
+            className="transition-opacity hover:opacity-100 cursor-pointer bg-transparent border-none text-inherit"
+          >
+            Demo
+          </button>
+          <a
+            className="transition-opacity hover:opacity-100"
+            href="https://github.com/ronkenx9/worldline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SDK
+          </a>
         </nav>
       </header>
 
@@ -165,8 +196,23 @@ export function ScrollJourney() {
             Build worlds<br />that remember.
           </h2>
           <div className="relative mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href="#" className="pointer-events-auto rounded-full bg-memory px-7 py-3 font-sans text-sm font-semibold text-void transition-transform hover:scale-[1.03]">See the demo</a>
-            <a href="#" className="pointer-events-auto rounded-full border border-bone/25 px-7 py-3 font-sans text-sm font-medium text-bone/80 transition-colors hover:border-memory hover:text-memory">Read the SDK</a>
+            <button
+              onClick={() => {
+                if (forcedParam != null) return;
+                animate(journeyProgress, STOPS[3], { duration: 1.4, ease: [0.22, 1, 0.36, 1] });
+              }}
+              className="pointer-events-auto rounded-full bg-memory px-7 py-3 font-sans text-sm font-semibold text-void transition-transform hover:scale-[1.03] cursor-pointer border-none"
+            >
+              See the demo
+            </button>
+            <a
+              href="https://github.com/ronkenx9/worldline"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pointer-events-auto rounded-full border border-bone/25 px-7 py-3 font-sans text-sm font-medium text-bone/80 transition-colors hover:border-memory hover:text-memory"
+            >
+              Read the SDK
+            </a>
           </div>
           <p className="relative mt-5 font-display text-base italic text-bone/40">The player is the platform.</p>
         </motion.div>
